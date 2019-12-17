@@ -1,58 +1,58 @@
 //--------------------------------------------------
 // 1. Draw a BST
 
-                //     3
-                //   /   \
-                //  1     4
-                //   \     \ 
-                //    2     6
-                //         / \
-                //        5   9
-                //           /
-                //          7 
-
-                //        E 
-                //     /     \
-                //   A         S 
-                //    \      /   \
-                //     E   Q       Y
-                //        / \     /
-                //       I   S   U
-                //        \     /
-                //         O   T
-                //        /
-                //       N    
+//     3
+//  1     4
+//   \     \ 
+//    2     6
+//         / \
+//        5   9
+//           /
+//          7 
+  
+// 
+//        E 
+//     /     \
+//   A         S 
+//    \      /   \
+//     E   Q       Y
+//        / \     /
+//       I   S   U
+//        \     /
+//         O   T
+//        /
+//       N    
 
 
 //--------------------------------------------------
 // 2. Remove the root
 
-                //     4
-                //   /   \
-                //  1      6
-                //   \    / \ 
-                //    2  5   9
-                //          / 
-                //         7   
-                //           
-                //           
+//     4
+//   /   \
+//  1      6
+//   \    / \ 
+//    2  5   9
+//          / 
+//         7   
+//           
+//           
 
-                //        I 
-                //     /     \
-                //   A         S 
-                //    \      /   \
-                //     E   Q       Y
-                //        / \     /
-                //       O   S   U
-                //      /       /
-                //     N       T
-                
-                
+//        I 
+//     /     \
+//   A         S 
+//    \      /   \
+//     E   Q       Y
+//        / \     /
+//       O   S   U
+//      /       /
+//     N       T
+
+
 //--------------------------------------------------
 // 3. Create a BST class
 
 class BinarySearchTree {
-    constructor(key=null, value=null, parent=null) {
+    constructor(key = null, value = null, parent = null) {
         this.key = key
         this.value = value
         this.parent = parent
@@ -176,6 +176,13 @@ class BinarySearchTree {
         }
         return this.left._findMin()
     }
+
+    _findMax() {
+        if (!this.right) {
+            return this
+        }
+        return this.right._findMax()
+    }
 }
 
 function main() {
@@ -187,7 +194,7 @@ function main() {
     numbersTree.insert(9)
     numbersTree.insert(2)
     numbersTree.insert(5)
-    numbersTree.insert(7)
+    // numbersTree.insert(7)
     const lettersTree = new BinarySearchTree
     lettersTree.insert('E')
     lettersTree.insert('A')
@@ -201,9 +208,17 @@ function main() {
     lettersTree.insert('I')
     lettersTree.insert('O')
     lettersTree.insert('N')
-    console.log(lettersTree)
-    lettersTree.remove('E')
-    console.log(lettersTree)
+    const balancedTree = new BinarySearchTree
+    balancedTree.insert(10)
+    balancedTree.insert(15)
+    balancedTree.insert(8)
+    balancedTree.insert(20)
+    balancedTree.insert(7)
+    balancedTree.insert(14)
+    balancedTree.insert(9)
+    // console.log(isItBst(numbersTree))
+    console.log(thirdLargest(numbersTree))
+    // console.log(isItBalanced(numbersTree))
 }
 
 main()
@@ -211,3 +226,147 @@ main()
 
 //--------------------------------------------------
 // 4. What does this program do?
+
+// This function attempts to display a BST node's value with its left child on it's left and the right child on it's right. 
+
+
+//--------------------------------------------------
+// 5. Height of a BST
+
+function findBstHeight(tree) {
+    let heightRight = 0
+    let heightLeft = 0
+    let currNode = tree
+    if (currNode.left === null && currNode.right === null) {
+        if (heightLeft > heightRight) {
+            return heightLeft
+        }
+        return heightRight
+    }
+    if (currNode.left) {
+        heightLeft++
+        heightLeft = heightLeft + findBstHeight(currNode.left)
+    }
+    if (currNode.right) {
+        heightRight++
+        heightRight = heightRight + findBstHeight(currNode.right)
+    }
+    if (heightLeft > heightRight) {
+        return heightLeft
+    }
+    return heightRight
+}
+
+
+//--------------------------------------------------
+// 6. Is it a BST?
+
+function isItBst(tree) {
+    let currNode = tree
+    if (currNode === null) {
+        return false
+    }
+    if (currNode.right && currNode.right.key < currNode.key) {
+        return false
+    }
+    if (currNode.left && currNode.left.key > currNode.key) {
+        return false
+    }
+    if (currNode.left) {
+        return isItBst(currNode.left)
+    }
+    if (currNode.right) {
+        return isItBst(currNode.right)
+    }
+    return true
+}
+
+
+//--------------------------------------------------
+// 7. 3rd largest node
+
+function thirdLargest(tree) {
+    let largestNode = tree._findMax()
+    if (largestNode.left) {
+        if (largestNode.left.left) {
+            return largestNode.left.left
+        }
+        if (!largestNode.left.left) {
+            return largestNode.parent
+        }
+    }
+    return largestNode.parent.left
+}
+//--------------------------------------------------
+// 8. Balanced BST
+
+function isItBalanced(tree) {
+    let heightRight = 0
+    let heightLeft = 0
+    let currNode = tree
+    if (currNode.left === null && currNode.right === null) {
+        if (heightLeft > heightRight) {
+            return heightLeft
+        }
+        return heightRight
+    }
+    if (currNode.left) {
+        heightLeft++
+        heightLeft = heightLeft + findBstHeight(currNode.left)
+    }
+    if (currNode.right) {
+        heightRight++
+        heightRight = heightRight + findBstHeight(currNode.right)
+    }
+    if (heightLeft >= heightRight) {
+        if ((heightLeft - heightRight) > 1) {
+            return false
+        }
+    }
+    if (heightRight > heightLeft) {
+        if ((heightRight - heightLeft) > 1) {
+            return false
+        }
+    }
+    return true
+}
+
+
+//--------------------------------------------------
+// 9. Are they the same BSTs?
+
+let arr1 = [3, 1, 5, 2, 4, 6, 0]
+let arr2 = [5, 4, 6, 1, 0, 2, 3]
+
+function areIdentical(arr1, arr2) {
+    arr1Count = 0
+    arr2Count = 0
+    if (arr1.length !== arr2.length) {
+        return false
+    }
+    if (arr1[0] !== arr2[0]) {
+        return false
+    }
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] < arr1[i + 1]) {
+            arr1Count++
+        }
+        if (arr1[i] > arr1[i + 1]) {
+            arr1Count--
+        }
+        if (arr2[i] < arr2[i + 1]) {
+            arr2Count++
+        }
+        if (arr2[i] > arr2[i + 1]) {
+            arr2Count--
+        }
+    }
+    if (arr1Count !== arr2Count) {
+        return false
+    }
+    return true
+}
+
+console.log(areIdentical(arr1, arr2))
+
+
